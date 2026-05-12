@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chandigarh Highway Disasters Risk Map | POC</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); line-height: 1.5; }
+
+        /* Professional Header */
+        nav { 
+            background: var(--primary); 
+            color: white; 
+            padding: 1rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo { font-weight: 700; font-size: 1.25rem; letter-spacing: -0.025em; }
+        .badge { 
+            background: rgba(59, 130, 246, 0.2); 
+            color: var(--accent); 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 600;
+            border: 1px solid var(--accent);
+        }
+
+        /* POC Disclaimer */
+        .disclaimer-banner {
+            background: #fef2f2;
+            border-bottom: 1px solid #fee2e2;
+            color: #991b1b;
+            padding: 0.75rem 2rem;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        main { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 350px; gap: 2rem; }
+
+        /* Map Section */
+        .map-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        #map { height: 600px; width: 100%; }
+
+        /* Sidebar / Hotspots */
+        .sidebar { display: flex; flex-direction: column; gap: 2rem; }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        }
+        .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+        
+        .hotspot-list { display: flex; flex-direction: column; gap: 1rem; max-height: 500px; overflow-y: auto; }
+        .hotspot-item {
+            padding: 1rem;
+            border-radius: 8px;
+            background: #f1f5f9;
+            border-left: 4px solid var(--accent);
+            font-size: 0.875rem;
+        }
+        .hotspot-item .title { font-weight: 600; margin-bottom: 0.25rem; color: var(--primary); }
+        .hotspot-item .meta { font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+        /* Statistics */
+        .stats-row { 
+            grid-column: span 2; 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 1.5rem; 
+            margin-bottom: 2rem; 
+        }
+        .stat-box {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .stat-box .label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-box .value { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-top: 0.25rem; }
+
+        @media (max-width: 1024px) {
+            main { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">Chandigarh Highway Disasters <span style="font-weight: 300; opacity: 0.7;">Risk Map</span></div>
+    <div class="badge">Research Preview v0.1.0</div>
+</nav>
+
+<div class="disclaimer-banner">
+    <strong>PROOF OF CONCEPT (POC):</strong> This risk map is for research demonstration only. Data represents preliminary disaster risk assessment.
+</div>
+
+<main>
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="label">Mapped Blackspots</div>
+            <div class="value">5</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Road Segments</div>
+            <div class="value">4,233</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Study Area (km²)</div>
+            <div class="value">~3,600</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Active Data Sources</div>
+            <div class="value">3</div>
+        </div>
+    </div>
+
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+
+    <div class="sidebar">
+        <div class="card">
+            <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Incident Hotspots (Scraped)
+            </h2>
+            <div class="hotspot-list" id="hotspot-list">
+                <div class="hotspot-item">
+                    <div class="title">Multi-vehicle pile-up near Zirakpur</div>
+                    <div class="meta">Source: The Tribune | 2024-01-15</div>
+                </div>
+                <div class="hotspot-item">
+                    <div class="title">Monsoon Cave-in: Industrial Area Ph-1</div>
+                    <div class="meta">Source: Hindustan Times | 2023-07-10</div>
+                </div>
+                <div class="hotspot-item" style="border-left-color: var(--danger);">
+                    <div class="title">Landslide Blockage: NH5 Parwanoo</div>
+                    <div class="meta">Source: Regional Reports | 2023-08-22</div>
+                </div>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; font-style: italic;">
+                *Displaying limited sample data for POC demonstration.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2>Research Context</h2>
+            <p style="font-size: 0.875rem; color: var(--text-muted);">
+                The Chandigarh Highway Disasters Risk Map focuses on the intersection of weather-induced hazards and infrastructure vulnerability. Our model prioritizes fog-related visibility failures and monsoon structural risks. 
+                <br><br>
+                <strong>Data Attribution:</strong> Risk markers and incident hotspots are sourced extensively from regional news reports, traffic archives, and social media event detection.
+            </p>
+        </div>
+
+    </div>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    const map = L.map('map', {
+        zoomControl: false
+    }).setView([30.70, 76.78], 11);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+    }).addTo(map);
+
+    // Load Highways
+    fetch('data/processed/chandigarh_highways.geojson')
+        .then(res => res.json())
+        .then(data => {
+            L.geoJSON(data, {
+                style: function(feature) {
+                    const isNH = feature.properties.ref && (feature.properties.ref.includes('NH5') || feature.properties.ref.includes('NH44'));
+                    return {
+                        color: isNH ? '#3b82f6' : '#cbd5e1',
+                        weight: isNH ? 3 : 1,
+                        opacity: isNH ? 0.9 : 0.4
+                    };
+                }
+            }).addTo(map);
+        });
+
+    // Load Blackspots
+    fetch('data/processed/chandigarh_blackspots.geojson')
+        .then(res => res.json())
+        .then(data => {
+            L.geoJSON(data, {
+                pointToLayer: function(feature, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 6,
+                        fillColor: "#ef4444",
+                        color: "#ffffff",
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 1
+                    });
+                },
+                onEachFeature: function(feature, layer) {
+                    layer.bindPopup(`
+                        <div style="font-family: 'Inter', sans-serif;">
+                            <strong style="color: #0f172a;">${feature.properties.name}</strong><br>
+                            <p style="margin: 5px 0; font-size: 12px; color: #64748b;">${feature.properties.description}</p>
+                            <span style="font-size: 10px; background: #f1f5f9; padding: 2px 5px; border-radius: 4px;">Route: ${feature.properties.highway}</span>
+                        </div>
+                    `);
+                }
+            }).addTo(map);
+        });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sherman Minton Bridge (I-64)",
+        "description": "High-priority icing blackspot; major Louisville-Indiana connector.",
+        "type": "Icing Blackspot",
+        "highway": "I-64"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-85.8075, 38.2778]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kennedy Bridge (I-65)",
+        "description": "Critical bridge over the Ohio River; prone to rapid surface freezing.",
+        "type": "Icing Blackspot",
+        "highway": "I-65"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-85.7431, 38.2625]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "I-75 Clays Ferry Bridge",
+        "description": "High-elevation bridge south of Lexington; severe icing history.",
+        "type": "Icing Blackspot",
+        "highway": "I-75"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-84.3414, 37.8864]
+      }
+    }
+  ]
+}

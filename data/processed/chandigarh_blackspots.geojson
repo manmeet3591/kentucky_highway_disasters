@@ -1,0 +1,70 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hallomajra Light Point",
+        "description": "Critical blackspot on NH5 Ambala-Chandigarh Highway.",
+        "type": "Blackspot",
+        "highway": "NH5"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.8035, 30.6985]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Poultry Farm Chowk",
+        "description": "High-fatality intersection on NH5.",
+        "type": "Blackspot",
+        "highway": "NH5"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.7985, 30.7055]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kalagram Light Point",
+        "description": "Major accident zone on Chandigarh-Panchkula road.",
+        "type": "Blackspot",
+        "highway": "Madhya Marg Extension"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.8261, 30.7100]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Housing Board Light Point",
+        "description": "Transition point between Chandigarh and Panchkula; frequent collisions.",
+        "type": "Blackspot",
+        "highway": "Chandigarh-Panchkula Road"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.8372, 30.7081]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Zirakpur NH5/NH44 Intersection",
+        "description": "Crucial junction where NH5 meets NH44; major gateway hazard.",
+        "type": "Blackspot",
+        "highway": "NH5 / NH44"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.8173, 30.6425]
+      }
+    }
+  ]
+}
