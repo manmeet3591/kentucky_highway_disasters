@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chandigarh Highway Disasters Risk Map | POC</title>
+    <title>Kentucky Highway Disasters Risk Map | POC</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -116,31 +116,31 @@
 <body>
 
 <nav>
-    <div class="logo">Chandigarh Highway Disasters <span style="font-weight: 300; opacity: 0.7;">Risk Map</span></div>
+    <div class="logo">Kentucky Highway Disasters <span style="font-weight: 300; opacity: 0.7;">Risk Map</span></div>
     <div class="badge">Research Preview v0.1.0</div>
 </nav>
 
 <div class="disclaimer-banner">
-    <strong>PROOF OF CONCEPT (POC):</strong> This risk map is for research demonstration only. Data represents preliminary disaster risk assessment.
+    <strong>PROOF OF CONCEPT (POC):</strong> This risk map is for research demonstration only. Data focuses on Kentucky Road Icing and Winter Hazards.
 </div>
 
 <main>
     <div class="stats-row">
         <div class="stat-box">
-            <div class="label">Mapped Blackspots</div>
-            <div class="value">5</div>
+            <div class="label">Mapped Icing Blackspots</div>
+            <div class="value">3+</div>
         </div>
         <div class="stat-box">
-            <div class="label">Road Segments</div>
-            <div class="value">4,233</div>
+            <div class="label">KY Highway Segments</div>
+            <div class="value">~12,500</div>
         </div>
         <div class="stat-box">
-            <div class="label">Study Area (km²)</div>
-            <div class="value">~3,600</div>
+            <div class="label">Study Area</div>
+            <div class="value">Kentucky (Statewide)</div>
         </div>
         <div class="stat-box">
-            <div class="label">Active Data Sources</div>
-            <div class="value">3</div>
+            <div class="label">KYTC Data Status</div>
+            <div class="value">Linked</div>
         </div>
     </div>
 
@@ -152,36 +152,35 @@
         <div class="card">
             <h2>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                Incident Hotspots (Scraped)
+                Incident Hotspots (KYTC/News)
             </h2>
             <div class="hotspot-list" id="hotspot-list">
-                <div class="hotspot-item">
-                    <div class="title">Multi-vehicle pile-up near Zirakpur</div>
-                    <div class="meta">Source: The Tribune | 2024-01-15</div>
+                <div class="hotspot-item" style="border-left-color: #3498db;">
+                    <div class="title">Black Ice Pile-up: I-64 Shelby County</div>
+                    <div class="meta">Source: KYTC Alert | 2024-02-01</div>
                 </div>
                 <div class="hotspot-item">
-                    <div class="title">Monsoon Cave-in: Industrial Area Ph-1</div>
-                    <div class="meta">Source: Hindustan Times | 2023-07-10</div>
+                    <div class="title">I-75 Bridge Icing: Clays Ferry</div>
+                    <div class="meta">Source: LEX18 | 2024-01-20</div>
                 </div>
                 <div class="hotspot-item" style="border-left-color: var(--danger);">
-                    <div class="title">Landslide Blockage: NH5 Parwanoo</div>
-                    <div class="meta">Source: Regional Reports | 2023-08-22</div>
+                    <div class="title">Multi-Car Mishap: I-65 Elizabethown</div>
+                    <div class="meta">Source: KSP Report | 2024-01-18</div>
                 </div>
             </div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; font-style: italic;">
-                *Displaying limited sample data for POC demonstration.
+                *Displaying limited sample data for Kentucky icing events.
             </p>
         </div>
 
         <div class="card">
             <h2>Research Context</h2>
             <p style="font-size: 0.875rem; color: var(--text-muted);">
-                The Chandigarh Highway Disasters Risk Map focuses on the intersection of weather-induced hazards and infrastructure vulnerability. Our model prioritizes fog-related visibility failures and monsoon structural risks. 
+                The Kentucky Highway Disasters Risk Map prioritizes **Road Icing** and winter weather infrastructure vulnerability. Data is sourced from the Kentucky Transportation Cabinet (KYTC) and the KSP CRASH database.
                 <br><br>
-                <strong>Data Attribution:</strong> Risk markers and incident hotspots are sourced extensively from regional news reports, traffic archives, and social media event detection.
+                <strong>Data Attribution:</strong> Risk markers and incident hotspots are sourced from KYTC Open Data, KSP archives, and regional weather detection systems.
             </p>
         </div>
-
     </div>
 </main>
 
@@ -189,7 +188,7 @@
 <script>
     const map = L.map('map', {
         zoomControl: false
-    }).setView([30.70, 76.78], 11);
+    }).setView([37.8393, -84.2700], 7);
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -198,12 +197,12 @@
     }).addTo(map);
 
     // Load Highways
-    fetch('data/processed/chandigarh_highways.geojson')
+    fetch('data/processed/kentucky_highways.geojson')
         .then(res => res.json())
         .then(data => {
             L.geoJSON(data, {
                 style: function(feature) {
-                    const isNH = feature.properties.ref && (feature.properties.ref.includes('NH5') || feature.properties.ref.includes('NH44'));
+                    const isNH = feature.properties.ref && (feature.properties.ref.includes('I-') || feature.properties.ref.includes('US-'));
                     return {
                         color: isNH ? '#3b82f6' : '#cbd5e1',
                         weight: isNH ? 3 : 1,
@@ -214,7 +213,7 @@
         });
 
     // Load Blackspots
-    fetch('data/processed/chandigarh_blackspots.geojson')
+    fetch('data/processed/kentucky_blackspots.geojson')
         .then(res => res.json())
         .then(data => {
             L.geoJSON(data, {
