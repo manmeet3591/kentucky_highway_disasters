@@ -234,26 +234,53 @@
                 }
             }).addTo(map);
 
-            // Generate Mock Heatmap Data along Highways
+            // Generate More Realistic Heatmap Clusters along Highways
             const heatPoints = [];
+            
+            // Define specific risk "hotspot" cities to concentrate clusters
+            const urbanCenters = [
+                {name: "Louisville", lat: 38.2527, lon: -85.7585, radius: 0.15},
+                {name: "Lexington", lat: 38.0406, lon: -84.5037, radius: 0.12},
+                {name: "Cincinnati Area", lat: 39.0906, lon: -84.5120, radius: 0.1},
+                {name: "Bowling Green", lat: 36.9903, lon: -86.4436, radius: 0.08},
+                {name: "Paducah", lat: 37.0834, lon: -88.6000, radius: 0.08}
+            ];
+
             data.features.forEach(feature => {
                 if (feature.geometry.type === 'LineString') {
-                    // Pick random points along the line
                     const coords = feature.geometry.coordinates;
                     coords.forEach(c => {
-                        if (Math.random() > 0.8) {
-                            heatPoints.push([c[1], c[0], Math.random()]);
+                        const lon = c[0];
+                        const lat = c[1];
+                        
+                        // Only add point to heatmap if it's near an urban center OR randomly along a highway
+                        let nearUrban = false;
+                        urbanCenters.forEach(center => {
+                            const dist = Math.sqrt(Math.pow(lat - center.lat, 2) + Math.pow(lon - center.lon, 2));
+                            if (dist < center.radius) {
+                                nearUrban = true;
+                                if (Math.random() > 0.4) { // Higher density in urban areas
+                                    heatPoints.push([lat, lon, Math.random() * 0.8 + 0.2]);
+                                }
+                            }
+                        });
+
+                        // Occasional isolated "rural" accidents
+                        if (!nearUrban && Math.random() > 0.992) {
+                            heatPoints.push([lat, lon, Math.random() * 0.5]);
                         }
                     });
                 }
             });
             
             L.heatLayer(heatPoints, {
-                radius: 20,
-                blur: 15,
+                radius: 18,
+                blur: 25,
                 maxZoom: 10,
-                gradient: {0.4: 'blue', 0.6: 'cyan', 0.7: 'lime', 0.8: 'yellow', 1: 'red'}
+                opacity: 0.7,
+                gradient: {0.4: '#3b82f6', 0.6: '#00f2ff', 0.8: '#facc15', 1: '#ef4444'}
             }).addTo(map);
+
         });
 
     // Load Static Blackspots
