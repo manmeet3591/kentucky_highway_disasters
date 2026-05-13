@@ -47,10 +47,11 @@ def osm_to_geojson(input_path, output_path):
     print(f"Total highway segments processed: {len(features)}")
 
 if __name__ == "__main__":
-    input_file = 'data/raw/chandigarh_highways.json'
-    output_file = 'data/processed/chandigarh_highways.geojson'
+    input_file = 'data/raw/kentucky_highways.json'
+    output_file = 'data/processed/kentucky_highways.geojson'
     os.makedirs('data/processed', exist_ok=True)
     if os.path.exists(input_file):
         osm_to_geojson(input_file, output_file)
     else:
         print(f"Input file not found: {input_file}")
+
